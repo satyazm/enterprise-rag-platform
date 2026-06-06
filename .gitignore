@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+*.db
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Data
+uploads/
+*.log
+evaluation/reports/*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+postgres_data/
+qdrant_data/
+
+# Local git dir (sandbox workaround)
+.repo-git/
+.write-test
