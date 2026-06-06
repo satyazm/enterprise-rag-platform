@@ -8,7 +8,8 @@ from prometheus_client import Counter, Histogram, make_asgi_app
 from app.api import admin, auth, chat, documents, health
 from app.core.config import get_settings
 from app.core.logging import setup_logging
-from app.database.postgres import init_db
+from app.database.postgres import AsyncSessionLocal, init_db
+from app.services.auth_service import seed_default_users
 
 if os.getenv("LANGCHAIN_TRACING_V2", "").lower() == "true":
     os.environ.setdefault("LANGCHAIN_TRACING_V2", "true")
@@ -23,6 +24,8 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
+    async with AsyncSessionLocal() as db:
+        await seed_default_users(db)
     yield
 
 

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { api } from "@/services/api";
 
 export function LoginForm({ onLogin }: { onLogin: () => void }) {
-  const [email, setEmail] = useState("admin@enterprise.local");
+  const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("admin123");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ export function LoginForm({ onLogin }: { onLogin: () => void }) {
           {loading ? "Signing in..." : "Sign In"}
         </button>
         <p className="text-xs text-slate-500 mt-4 text-center">
-          Demo: admin@enterprise.local / admin123
+          Demo: admin@example.com / admin123
         </p>
       </form>
     </div>

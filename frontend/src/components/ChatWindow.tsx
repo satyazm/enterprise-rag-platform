@@ -27,9 +27,13 @@ export function ChatWindow() {
         { role: "assistant", content: res.message, citations: res.citations as Citation[] },
       ]);
     } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      const hint = msg === "Failed to fetch"
+        ? "Cannot reach the API at localhost:8000. Run: docker compose ps && docker compose logs backend --tail 30"
+        : msg;
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: `Error: ${err instanceof Error ? err.message : "Unknown error"}` },
+        { role: "assistant", content: `Error: ${hint}` },
       ]);
     } finally {
       setLoading(false);

@@ -1,7 +1,11 @@
 import uuid
 from typing import Annotated
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
+
+logger = logging.getLogger(__name__)
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -53,13 +57,17 @@ async def chat(
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    service = ChatService(db)
-    result = await service.process_message(
-        user=user,
-        message=payload.message,
-        conversation_id=payload.conversation_id,
-    )
-    return ChatResponse(**result)
+    try:
+        service = ChatService(db)
+        result = await service.process_message(
+            user=user,
+            message=payload.message,
+            conversation_id=payload.conversation_id,
+        )
+        return ChatResponse(**result)
+    except Exception as exc:
+        logger.exception("Chat request failed")
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @router.get("/conversations", response_model=list[ConversationResponse])

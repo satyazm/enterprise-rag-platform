@@ -7,9 +7,9 @@ from app.database.models import User, UserRole
 
 async def seed_default_users(db: AsyncSession) -> None:
     defaults = [
-        ("admin@enterprise.local", "admin123", "Platform Admin", UserRole.ADMIN),
-        ("analyst@enterprise.local", "analyst123", "Data Analyst", UserRole.ANALYST),
-        ("viewer@enterprise.local", "viewer123", "Knowledge Viewer", UserRole.VIEWER),
+        ("admin@example.com", "admin123", "Platform Admin", UserRole.ADMIN),
+        ("analyst@example.com", "analyst123", "Data Analyst", UserRole.ANALYST),
+        ("viewer@example.com", "viewer123", "Knowledge Viewer", UserRole.VIEWER),
     ]
     for email, password, name, role in defaults:
         existing = await db.execute(select(User).where(User.email == email))

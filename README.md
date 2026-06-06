@@ -61,9 +61,11 @@ Open http://localhost:3000 and sign in with:
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@enterprise.local | admin123 |
-| Analyst | analyst@enterprise.local | analyst123 |
-| Viewer | viewer@enterprise.local | viewer123 |
+| Admin | admin@example.com | admin123 |
+| Analyst | analyst@example.com | analyst123 |
+| Viewer | viewer@example.com | viewer123 |
+
+Demo users are created automatically on backend startup.
 
 ## Project Structure
 

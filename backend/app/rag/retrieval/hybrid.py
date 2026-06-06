@@ -44,9 +44,16 @@ class HybridRetriever:
 
     async def retrieve(self, query: str, top_k: int | None = None, filters: dict | None = None) -> list[dict]:
         top_k = top_k or settings.rerank_top_k
-        query_embedding = (await embed_texts([query]))[0]
 
-        vector_results = await self.vector.search(query_embedding, top_k=top_k, filters=filters)
+        vector_results: list[dict] = []
+        try:
+            query_embedding = (await embed_texts([query]))[0]
+            vector_results = await self.vector.search(query_embedding, top_k=top_k, filters=filters)
+        except Exception:
+            pass  # fall back to BM25-only if Qdrant or embeddings fail
+
         bm25_results = await self.bm25.search(query, top_k=top_k)
 
-        return _fuse_results(vector_results, bm25_results, settings.hybrid_alpha)
+        if vector_results and bm25_results:
+            return _fuse_results(vector_results, bm25_results, settings.hybrid_alpha)
+        return vector_results or bm25_results

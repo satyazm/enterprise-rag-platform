@@ -22,11 +22,17 @@ services:
       - "6334:6334"
     volumes:
       - qdrant_data:/qdrant/storage
+    # Official image has no curl/wget; perl + IO::Socket is available
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      test:
+        - CMD
+        - perl
+        - -e
+        - use IO::Socket::INET; exit(IO::Socket::INET->new(PeerAddr=>q{127.0.0.1},PeerPort=>6333,Proto=>q{tcp},Timeout=>2)?0:1)
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 15s
 
   backend:
     build:
@@ -35,7 +41,8 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       POSTGRES_HOST: postgres
       QDRANT_HOST: qdrant
@@ -46,7 +53,7 @@ services:
       postgres:
         condition: service_healthy
       qdrant:
-        condition: service_healthy
+        condition: service_started
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:
